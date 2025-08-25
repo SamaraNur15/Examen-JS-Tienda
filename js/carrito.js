@@ -15,7 +15,7 @@
 
 // TODO: Estas variables ya están declaradas para ayudarte
 let carrito = []; // Array para guardar productos del carrito
-
+const LS_KEY = 'carrito';
 // TODO: Referencias a elementos del DOM que necesitarás usar
 const listaCarrito = document.getElementById('cartItems');
 const seccionVacia = document.getElementById('emptyCart');
@@ -48,7 +48,7 @@ function cargarCarrito() {
     try {
         // TODO: Escribe tu código aquí
         // Ejemplo: const datosGuardados = localStorage.getItem('carrito');
-        const raw = localStorage.getItem('LS_KEY');
+        const raw = localStorage.getItem(LS_KEY);
         carrito = raw ? JSON.parse(raw) : [];
 
 
@@ -172,7 +172,7 @@ function cambiarCantidad(indice, cambio) {
         else {
             carrito[indice].cantidad = nuevaCantidad;
         }
-        localStorage.setItem('LS_KEY', JSON.stringify(carrito));
+        localStorage.setItem(LS_KEY, JSON.stringify(carrito));
         mostrarProductosCarrito();
         actualizarResumenCompra();
 
@@ -220,10 +220,14 @@ function cambiarCantidad(indice, cambio) {
 function actualizarResumenCompra() {
 
     const subtotal = carrito.reduce((acc,p)=> acc + (p.precio * p.cantidad),0);
-    const totalItems = carrito.reduce((acc,p)=> acc + p.cantidad,0);
-    const total = subtotal;
+    const totalItems  = carrito.reduce((acc,p)=> acc + p.cantidad, 0);
+    const total       = subtotal;
+    if (contadorItems) contadorItems.textContent = String(totalItems);
+    const summaryItemCount = document.getElementById('summaryItemCount');
+    if (summaryItemCount) summaryItemCount.textContent = String(totalItems);
+    
 
-    if (contadorItems) contadorItems.textContent = String(contadorItems);
+    
     if (subtotalElemento) subtotalElemento.textContent = formatearPrecio(subtotal);
     if (totalElemento) totalElemento.textContent = formatearPrecio(total);
     
@@ -245,6 +249,8 @@ function actualizarResumenCompra() {
     // totalElemento.textContent = formatearPrecio(total);
     
 }
+const headerCount = document.getElementById('cartCount');
+if (headerCount) headerCount.textContent = String(totalItems);
 
 // ==========================================
 // FUNCIÓN 5: ELIMINAR PRODUCTO DEL CARRITO (10 PUNTOS)
@@ -266,6 +272,11 @@ function actualizarResumenCompra() {
  * - Actualización de interfaz (3 pts)
  */
 function eliminarDelCarrito(indice) {
+    if (indice < 0 || indice >= carrito.length) return;
+    carrito.splice(indice, 1);
+    localStorage.setItem(LS_KEY || 'carrito', JSON.stringify(carrito));
+    mostrarProductosCarrito();
+    actualizarResumenCompra();
     // TODO: Escribe tu código aquí
     
     // Paso 1: Verificar índice válido
@@ -301,7 +312,10 @@ function vaciarCarrito() {
     if (confirm('¿Estás seguro de vaciar todo el carrito?')) {
         // TODO: Vaciar array y localStorage
         
-        
+        carrito = [];
+        localStorage.removeItem(LS_KEY || 'carrito'); // según el punto 1
+        mostrarProductosCarrito();
+        actualizarResumenCompra();
         // TODO: Actualizar interfaz
         
         

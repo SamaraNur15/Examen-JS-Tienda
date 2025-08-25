@@ -33,11 +33,7 @@ async function cargarProductos() {
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const data = await resp.json();
         
-        todosLosProductos = Array.isArray(data.productos)
-        ? data
-        : Array.isArray(data.productos)
-        ? data.productos
-        : [];
+        todosLosProductos = Array.isArray(data.productos) ? data.productos : [];
 
         mostrarProductos(todosLosProductos);
     }
@@ -48,6 +44,7 @@ async function cargarProductos() {
         }
     }    
 }
+document.addEventListener('DOMContentLoaded', cargarProductos);
 /**
  * TODO: Completa esta función para cargar productos desde 'data/productos.json'
  * 
@@ -167,6 +164,7 @@ function agregarAlCarrito(idProducto) {
             id: producto.id,
             nombre: producto.nombre,
             precio: producto.precio,
+            imagen: producto.imagen,
             cantidad: 1
         });
     }
